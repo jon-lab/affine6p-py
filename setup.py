@@ -14,7 +14,7 @@ setup(
     long_description=long_description,
     author="Masahiro Yoshimoto",
     author_email="yoshimoto@flab.phys.nagoya-u.ac.jp",
-    url="https://gitlab.com/yoshimoto/affine6d",
+    url="https://gitlab.com/yoshimoto/affine6p-py",
     py_modules=["affine6p"],
     include_package_data=True,
     install_requires=["Flask"],
