@@ -46,6 +46,7 @@ class TestEstimate(unittest.TestCase):
         should affine6p correctly
         '''
         for sple in samples:
+            #check estimate
             t = affine6p.estimate(sple['a'], sple['b'])
             for k in range(0,6):
                 msg = sple['id'] + ': ' + str(k) + '=' + str(t.params[k])
@@ -54,10 +55,23 @@ class TestEstimate(unittest.TestCase):
             if len(sple['a']) < 3:
                 continue
 
+            #check functions
+            print("{0} -> {1}".format(sple['a'],sple['b']))
+            print("matrix = {0}".format(t.get_matrix()))
+            print("rotation_x = {0}".format(t.get_rotation_x()))
+            print("rotation_y = {0}".format(t.get_rotation_y()))
+            print("scale_x = {0}".format(t.get_scale_x()))
+            print("scale_y = {0}".format(t.get_scale_y()))
+            print("scale = {0}".format(t.get_scale()))
+            print("translation = {0}".format(t.get_translation()))
+            print(" ")
+
+            #check estimate_error
             e = affine6p.estimate_error(t, sple['a'], sple['b'])
             msg = sple['id'] + ': error =' + str(e)
             self.assertTrue(abs(e - sple["error"])<0.001, msg)
 
+            #check transform_inv
             if len(sple['a']) == 3:
                 for k in range(0,3):
                     b2 = t.transform_inv(sple['b'][k])
