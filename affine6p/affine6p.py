@@ -7,21 +7,38 @@ class Transform(object):
         # Public, to allow user access
         self.params = params
 
-    def convrtform(self, p):
+    def transform(self, p):
         '''
         Parameter
             p
                 point [x, y] or list of points [[x1,y1], [x2,y2], ...]
         '''
-        def convrtform_one(q):
+        def transform_one(q):
             return [self.params[0] * q[0] + self.params[1] * q[1] + self.params[4],
                     self.params[2] * q[0] + self.params[3] * q[1] + self.params[5]]
 
         if not isinstance(p[0], list):
             # Single point
-            return convrtform_one(p)
+            return transform_one(p)
         # else
-        return list(map(convrtform_one, p))
+        return list(map(transform_one, p))
+
+    def transform_inv(self, p):
+        '''
+        Parameter
+            p
+                point [x, y] or list of points [[x1,y1], [x2,y2], ...]
+        '''
+        def transform_inv_one(q):
+            det = self.params[0] * self.params[3] - self.params[2] * self.params[1]
+            return [(self.params[3] * (q[0] - self.params[4]) - self.params[1] * (q[1] - self.params[5])) / det,
+                    -1. * (self.params[2] * (q[0] - self.params[4]) - self.params[0] * (q[1] - self.params[5])) / det]
+
+        if not isinstance(p[0], list):
+            # Single point
+            return transform_inv_one(p)
+        # else
+        return list(map(transform_inv_one, p))
 
     def get_matrix(self):
         return [[self.params[0], self.params[1], self.params[4]],
@@ -116,7 +133,7 @@ def estimate(origin, convrt):
 def estimate_error(transform, origin, convrt):
     '''
     Parameters
-        convrtform
+        transform
             a nudged.Transform instance
         origin
             list of [x, y] 2D lists
@@ -124,7 +141,7 @@ def estimate_error(transform, origin, convrt):
             list of [x, y] 2D lists
     '''
 
-    origin = transform.convrtform(origin)
+    origin = transform.transform(origin)
     convrt = convrt
 
     # Allow arrays of different length but

@@ -58,6 +58,13 @@ class TestEstimate(unittest.TestCase):
             msg = sple['id'] + ': error =' + str(e)
             self.assertTrue(abs(e - sple["error"])<0.001, msg)
 
+            if len(sple['a']) == 3:
+                for k in range(0,3):
+                    b2 = t.transform_inv(sple['b'][k])
+                    for l in range(0,2):
+                        msg = sple['id'] + ': a2 =' + str(b2[l])
+                        self.assertTrue(abs(b2[l] - sple["a"][k][l])<0.001, msg)
+
 
 if __name__ == '__main__':
     unittest.main()
