@@ -58,9 +58,10 @@ class Transform(object):
         return math.sqrt(self.params[2] * self.params[2] + self.params[3] * self.params[3])
 
     def get_scale(self):
-        return math.sqrt(self.get_scale_x() * self.get_scale_x() + self.get_scale_y() * self.get_scale_y())
+        summed = self.get_scale_x() * self.get_scale_x() + self.get_scale_y() * self.get_scale_y()
+        return math.sqrt(summed * 0.5)
 
-    def get_convrtlation(self):
+    def get_translation(self):
         return [self.params[4], self.params[5]]
 
 
