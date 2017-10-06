@@ -1,26 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import with_statement
 from setuptools import setup
 
-with open("README.rst") as f:
+with open("README.rst", encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name="affine6p",
-    version="0.0.1",
+    version="0.1",
     description="To calculate affine transformation parameters with six free parameters.",
     long_description=long_description,
+    url="https://gitlab.com/yoshimoto/affine6p-py",
     author="Masahiro Yoshimoto",
     author_email="yoshimoto@flab.phys.nagoya-u.ac.jp",
-    url="https://gitlab.com/yoshimoto/affine6p-py",
-    py_modules=["affine6p"],
-    include_package_data=True,
-    install_requires=["Flask"],
-    tests_require=["nose"],
     license="MIT",
     keywords="calculate affine transformation six parameters",
-    zip_safe=False,
+    packages=["affine6p"],
     classifiers=[]
 )
