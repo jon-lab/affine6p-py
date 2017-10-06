@@ -41,9 +41,9 @@ samples = [
 
 class TestEstimate(unittest.TestCase):
 
-    def test_estimation(self):
+    def test_affine6p(self):
         '''
-        should estimate correctly
+        should affine6p correctly
         '''
         for sple in samples:
             t = affine6p.estimate(sple['a'], sple['b'])
