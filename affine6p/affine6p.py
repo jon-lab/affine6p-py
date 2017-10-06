@@ -32,7 +32,7 @@ class Transform(object):
         def transform_inv_one(q):
             det = self.params[0] * self.params[3] - self.params[2] * self.params[1]
             return [(self.params[3] * (q[0] - self.params[4]) - self.params[1] * (q[1] - self.params[5])) / det,
-                    -1. * (self.params[2] * (q[0] - self.params[4]) - self.params[0] * (q[1] - self.params[5])) / det]
+                    (self.params[2] * (q[0] - self.params[4]) - self.params[0] * (q[1] - self.params[5])) / det * -1.0]
 
         if not isinstance(p[0], list):
             # Single point
@@ -58,7 +58,7 @@ class Transform(object):
         return math.sqrt(self.params[2] * self.params[2] + self.params[3] * self.params[3])
 
     def get_scale(self):
-        return math.sqrt(get_scale_x() * get_scale_x() + get_scale_y() * get_scale_y())
+        return math.sqrt(self.get_scale_x() * self.get_scale_x() + self.get_scale_y() * self.get_scale_y())
 
     def get_convrtlation(self):
         return [self.params[4], self.params[5]]
@@ -77,8 +77,8 @@ def estimate(origin, convrt):
     # ignore the extra points.
     N = min(len(origin), len(convrt))
 
-    mat00 = mat11 = mat22 = mat01 = mat10 = mat02 = mat20 = mat12 = mat21 = 0
-    vec0 = vec1 = vec2 = vec3 = vec4 = vec5 = 0
+    mat00 = mat11 = mat22 = mat01 = mat10 = mat02 = mat20 = mat12 = mat21 = 0.0
+    vec0 = vec1 = vec2 = vec3 = vec4 = vec5 = 0.0
 
     for i in range(N):
         mat00 += origin[i][0] * origin[i][0]
@@ -98,11 +98,11 @@ def estimate(origin, convrt):
         vec4 += origin[i][1] * convrt[i][1]
         vec5 += convrt[i][1]
 
-    inv_det = 0
+    inv_det = 0.0
     inv_det += mat00 * mat11 * mat22 + mat10 * mat21 * mat02 + mat20 * mat01 * mat12 
     inv_det +=-mat00 * mat21 * mat12 - mat20 * mat11 * mat02 - mat10 * mat01 * mat22
 
-    params = [1, 0, 0, 1, 0, 0]
+    params = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
 
     if abs(inv_det) < 1e-8:
         return Transform(params)
@@ -134,7 +134,7 @@ def estimate_error(transform, origin, convrt):
     '''
     Parameters
         transform
-            a nudged.Transform instance
+            a affine6p.Transform instance
         origin
             list of [x, y] 2D lists
         convrt
@@ -147,7 +147,6 @@ def estimate_error(transform, origin, convrt):
     # Allow arrays of different length but
     # ignore the extra points.
     N = min(len(origin), len(convrt))
-
 
     se = 0.0
     for i in range(N):
