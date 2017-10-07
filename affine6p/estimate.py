@@ -3,6 +3,7 @@
 import math
 from .transform import Transform
 
+
 def estimate(origin, convert):
     '''
     Parameters
@@ -15,13 +16,17 @@ def estimate(origin, convert):
     # ignore the extra points.
     N = min(len(origin), len(convrt))
 
-    if(N>=3):
+    if(N >= 3):
         return estimate_full(origin, convert)
 
 
 def estimate_full(origin, convrt):
     '''
-    Estimate full 6 parameters by least squares method
+    Parameters
+        origin
+            list of [x, y] 2D lists
+        convrt
+            list of [x, y] 2D lists
     '''
     N = min(len(origin), len(convrt))
 
@@ -29,26 +34,31 @@ def estimate_full(origin, convrt):
     vec0 = vec1 = vec2 = vec3 = vec4 = vec5 = 0.0
 
     for i in range(N):
-        mat00 += origin[i][0] * origin[i][0]
-        mat11 += origin[i][1] * origin[i][1]
-        mat22 += 1
-        mat01 += origin[i][0] * origin[i][1]
-        mat10 += origin[i][0] * origin[i][1]
-        mat02 += origin[i][0]
-        mat20 += origin[i][0]
-        mat12 += origin[i][1]
-        mat21 += origin[i][1]
+        ox = origin[i][0]
+        oy = origin[i][1]
+        cx = convrt[i][0]
+        cy = convrt[i][1]
 
-        vec0 += origin[i][0] * convrt[i][0]
-        vec1 += origin[i][1] * convrt[i][0]
-        vec2 += convrt[i][0]
-        vec3 += origin[i][0] * convrt[i][1]
-        vec4 += origin[i][1] * convrt[i][1]
-        vec5 += convrt[i][1]
+        mat00 += ox * ox
+        mat01 += ox * oy
+        mat02 += ox
+        mat10 += ox * oy
+        mat11 += oy * oy
+        mat12 += oy
+        mat20 += ox
+        mat21 += oy
+        mat22 += 1
+
+        vec0 += ox * cx
+        vec1 += oy * cx
+        vec2 += cx
+        vec3 += ox * cy
+        vec4 += oy * cy
+        vec5 += cy
 
     det = 0.0
-    det += mat00 * mat11 * mat22 + mat10 * mat21 * mat02 + mat20 * mat01 * mat12 
-    det +=-mat00 * mat21 * mat12 - mat20 * mat11 * mat02 - mat10 * mat01 * mat22
+    det += mat00 * mat11 * mat22 + mat10 * mat21 * mat02 + mat20 * mat01 * mat12
+    det += -mat00 * mat21 * mat12 - mat20 * mat11 * mat02 - mat10 * mat01 * mat22
 
     params = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
 
@@ -60,19 +70,19 @@ def estimate_full(origin, convrt):
     inv_mat00 = inv_det * (mat11 * mat22 - mat12 * mat21)
     inv_mat01 = inv_det * (mat12 * mat20 - mat10 * mat22)
     inv_mat02 = inv_det * (mat10 * mat21 - mat11 * mat20)
+    inv_mat10 = inv_mat01
     inv_mat11 = inv_det * (mat22 * mat00 - mat20 * mat02)
     inv_mat12 = inv_det * (mat20 * mat01 - mat21 * mat00)
-    inv_mat22 = inv_det * (mat00 * mat11 - mat01 * mat10)
-    inv_mat10 = inv_mat01
     inv_mat20 = inv_mat02
     inv_mat21 = inv_mat12
+    inv_mat22 = inv_det * (mat00 * mat11 - mat01 * mat10)
 
     # Estimators
     params[0] = inv_mat00 * vec0 + inv_mat01 * vec1 + inv_mat02 * vec2
     params[1] = inv_mat10 * vec0 + inv_mat11 * vec1 + inv_mat12 * vec2
-    params[4] = inv_mat20 * vec0 + inv_mat21 * vec1 + inv_mat22 * vec2
     params[2] = inv_mat00 * vec3 + inv_mat01 * vec4 + inv_mat02 * vec5
     params[3] = inv_mat10 * vec3 + inv_mat11 * vec4 + inv_mat12 * vec5
+    params[4] = inv_mat20 * vec0 + inv_mat21 * vec1 + inv_mat22 * vec2
     params[5] = inv_mat20 * vec3 + inv_mat21 * vec4 + inv_mat22 * vec5
 
     return Transform(params)
@@ -98,17 +108,17 @@ def estimate_error(transform, origin, convrt):
 
     se = 0.0
     for i in range(N):
-        a = origin[i][0]
-        b = origin[i][1]
-        c = convrt[i][0]
-        d = convrt[i][1]
+        ox = origin[i][0]
+        oy = origin[i][1]
+        cx = convrt[i][0]
+        cy = convrt[i][1]
 
-        dx = a - c
-        dy = b - d
+        dx = ox - cx
+        dy = oy - cy
 
         se += dx * dx + dy * dy
 
     if N == 0:
         return 0
-    rms = math.sqrt(se / N)
-    return rms
+    else:
+        return math.sqrt(se / N)
