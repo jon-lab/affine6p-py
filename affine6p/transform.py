@@ -2,44 +2,46 @@
 
 import math
 
+
 class Transform(object):
 
     def __init__(self, params):
         # Public, to allow user access
         self.params = params
 
-    def transform(self, p):
+    def transform(self, points):
         '''
         Parameter
             p
                 point [x, y] or list of points [[x1,y1], [x2,y2], ...]
         '''
-        def transform_one(q):
-            return [self.params[0] * q[0] + self.params[1] * q[1] + self.params[4],
-                    self.params[2] * q[0] + self.params[3] * q[1] + self.params[5]]
+        def transform_one(point):
+            return [self.params[0] * point[0] + self.params[1] * point[1] + self.params[4],
+                    self.params[2] * point[0] + self.params[3] * point[1] + self.params[5]]
 
-        if not isinstance(p[0], list):
+        if not isinstance(points[0], list):
             # Single point
-            return transform_one(p)
+            return transform_one(points)
         # else
-        return list(map(transform_one, p))
+        return list(map(transform_one, points))
 
-    def transform_inv(self, p):
+    def transform_inv(self, points):
         '''
         Parameter
             p
                 point [x, y] or list of points [[x1,y1], [x2,y2], ...]
         '''
-        def transform_inv_one(q):
-            det = self.params[0] * self.params[3] - self.params[2] * self.params[1]
-            return [(self.params[3] * (q[0] - self.params[4]) - self.params[1] * (q[1] - self.params[5])) / det,
-                    (self.params[2] * (q[0] - self.params[4]) - self.params[0] * (q[1] - self.params[5])) / det * -1.0]
+        def transform_inv_one(point):
+            det = self.params[0] * self.params[3] - \
+                self.params[2] * self.params[1]
+            return [(self.params[3] * (point[0] - self.params[4]) - self.params[1] * (point[1] - self.params[5])) / det,
+                    (self.params[2] * (point[0] - self.params[4]) - self.params[0] * (point[1] - self.params[5])) / det * -1.0]
 
-        if not isinstance(p[0], list):
+        if not isinstance(points[0], list):
             # Single point
-            return transform_inv_one(p)
+            return transform_inv_one(points)
         # else
-        return list(map(transform_inv_one, p))
+        return list(map(transform_inv_one, points))
 
     def get_matrix(self):
         return [[self.params[0], self.params[1], self.params[4]],
@@ -59,10 +61,9 @@ class Transform(object):
         return math.sqrt(self.params[2] * self.params[2] + self.params[3] * self.params[3])
 
     def get_scale(self):
-        summed = self.get_scale_x() * self.get_scale_x() + self.get_scale_y() * self.get_scale_y()
+        summed = self.get_scale_x() * self.get_scale_x() + \
+            self.get_scale_y() * self.get_scale_y()
         return math.sqrt(summed * 0.5)
 
     def get_translation(self):
         return [self.params[4], self.params[5]]
-
-
