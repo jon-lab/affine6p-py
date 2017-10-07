@@ -47,7 +47,7 @@ class TestEstimate(unittest.TestCase):
         '''
         for sple in samples:
             #check estimate
-            t = affine6p.estimate_full(sple['a'], sple['b'])
+            t = affine6p.estimate(sple['a'], sple['b'])
             for k in range(0,6):
                 msg = sple['id'] + ': ' + str(k) + '=' + str(t.params[k])
                 self.assertTrue(abs(t.params[k] - sple["params"][k])<0.001, msg)
