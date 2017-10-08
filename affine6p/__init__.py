@@ -1,2 +1,2 @@
-from .estimate import estimate_full, estimate_error
+from .estimate import estimate, estimate_error
 from .transform import Transform
