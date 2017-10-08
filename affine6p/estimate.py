@@ -56,9 +56,10 @@ def estimate_full(origin, convrt):
         vec4 += oy * cy
         vec5 += cy
 
+    # Determinant of mat
     det = 0.0
-    det += mat00 * mat11 * mat22 + mat10 * mat21 * mat02 + mat20 * mat01 * mat12
-    det += -mat00 * mat21 * mat12 - mat20 * mat11 * mat02 - mat10 * mat01 * mat22
+    det += (mat00 * mat11 * mat22 + mat10 * mat21 * mat02 + mat20 * mat01 * mat12)
+    det -= (mat00 * mat21 * mat12 + mat20 * mat11 * mat02 + mat10 * mat01 * mat22)
 
     params = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
 
