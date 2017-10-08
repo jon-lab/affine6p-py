@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 import math
 from .transform import Transform
 
 
-def estimate(origin, convert):
+def estimate(origin, convrt):
     '''
     Parameters
         origin
@@ -16,8 +15,14 @@ def estimate(origin, convert):
     # ignore the extra points.
     N = min(len(origin), len(convrt))
 
-    if(N >= 3):
-        return estimate_full(origin, convert)
+    if N >= 3:
+        return estimate_full(origin, convrt)
+    elif N == 2:
+        return estimate_helmert(origin, convrt)
+    elif N == 1:
+        return Transform([1.0, 0.0, 0.0, 1.0, convrt[0][0] - origin[0][0], convrt[0][1] - origin[0][1]])
+    else:
+        raise ValueError
 
 
 def estimate_full(origin, convrt):
@@ -89,6 +94,55 @@ def estimate_full(origin, convrt):
     return Transform(params)
 
 
+def estimate_helmert(origin, convrt):
+    '''
+    Parameters
+        origin
+            list of [x, y] 2D lists
+        convrt
+            list of [x, y] 2D lists
+    '''
+    N = min(len(origin), len(convrt))
+
+    x0 = x1 = y0 = y1 = x02 = y02 = x0x1 = y0y1 = y0x1 = x0y1 = 0.0
+
+    for i in range(N):
+        ox = origin[i][0]
+        oy = origin[i][1]
+        cx = convrt[i][0]
+        cy = convrt[i][1]
+
+        x0 += ox
+        y0 += oy
+        x1 += cx
+        y1 += cy
+
+        x02 += ox * ox
+        y02 += oy * oy
+        x0x1 += ox * cx
+        x0y1 += ox * cy
+        y0x1 += oy * cx
+        y0y1 += oy * cy
+
+    det = x0 * x0 + y0 * y0 - N * (x02 + y02)
+
+    if abs(det) < 1e-8:
+        raise ZeroDivisionError("Value of determinant is almost zero.")
+
+    inv_det = 1.0 / det
+
+    # Estimators
+    params = [1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+    params[0] = (x0 * x1 + y0 * y1 - N * (x0x1 + y0y1)) * inv_det
+    params[1] = (y0 * x1 - x0 * y1 - N * (y0x1 - x0y1)) * inv_det
+    params[2] = -params[1]
+    params[3] = params[0]
+    params[4] = (x1 - params[0] * x0 - params[1] * y0) / N 
+    params[5] = (y1 - params[0] * y0 + params[1] * x0) / N
+
+    return Transform(params)
+
+
 def estimate_error(transform, origin, convrt):
     '''
     Parameters
@@ -100,19 +154,19 @@ def estimate_error(transform, origin, convrt):
             list of [x, y] 2D lists
     '''
 
-    origin = transform.transform(origin)
-    convrt = convrt
+    origin2 = transform.transform(origin)
+    convrt2 = convrt
 
     # Allow arrays of different length but
     # ignore the extra points.
-    N = min(len(origin), len(convrt))
+    N = min(len(origin2), len(convrt2))
 
     se = 0.0
     for i in range(N):
-        ox = origin[i][0]
-        oy = origin[i][1]
-        cx = convrt[i][0]
-        cy = convrt[i][1]
+        ox = origin2[i][0]
+        oy = origin2[i][1]
+        cx = convrt2[i][0]
+        cy = convrt2[i][1]
 
         dx = ox - cx
         dy = oy - cy
