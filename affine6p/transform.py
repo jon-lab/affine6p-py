@@ -9,6 +9,19 @@ class Transform(object):
         # Public, to allow user access
         self.params = params
 
+    def a(self):
+        return self.params[0]
+    def b(self):
+        return self.params[1]
+    def c(self):
+        return self.params[2]
+    def d(self):
+        return self.params[3]
+    def p(self):
+        return self.params[4]
+    def q(self):
+        return self.params[5]
+
     def transform(self, points):
         '''
         Parameter
