@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
@@ -8,7 +7,7 @@ with open("README.rst") as f:
 
 setup(
     name="affine6p",
-    version="0.5",
+    version="0.6",
     description="To calculate affine transformation parameters with six free parameters.",
     long_description=long_description,
     url="https://gitlab.com/yoshimoto/affine6p-py",
@@ -17,5 +16,16 @@ setup(
     license="MIT",
     keywords="calculate affine transformation six parameters",
     packages=["affine6p"],
-    classifiers=[]
+    classifiers=[
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
+        'Intended Audience :: Science/Research',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
+        'Topic :: Scientific/Engineering :: Image Recognition',
+        'Topic :: Scientific/Engineering :: Mathematics',
+        'Topic :: Scientific/Engineering :: Physics',
+        ]
 )
