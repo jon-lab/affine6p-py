@@ -7,7 +7,7 @@ with open("README.rst") as f:
 
 setup(
     name="affine6p",
-    version="0.6",
+    version="0.7",
     description="To calculate affine transformation parameters with six free parameters.",
     long_description=long_description,
     url="https://gitlab.com/yoshimoto/affine6p-py",
