@@ -38,6 +38,22 @@ class Transform(object):
         # else
         return list(map(transform_one, points))
 
+    def rotation(self, points):
+        '''
+        Parameter
+            p
+                point [x, y] or list of points [[x1,y1], [x2,y2], ...]
+        '''
+        def rotation_one(point):
+            return [self.params[0] * point[0] + self.params[1] * point[1],
+                    self.params[2] * point[0] + self.params[3] * point[1]]
+
+        if not isinstance(points[0], list):
+            # Single point
+            return rotation_one(points)
+        # else
+        return list(map(rotation_one, points))
+
     def transform_inv(self, points):
         '''
         Parameter
@@ -55,6 +71,24 @@ class Transform(object):
             return transform_inv_one(points)
         # else
         return list(map(transform_inv_one, points))
+
+    def rotation_inv(self, points):
+        '''
+        Parameter
+            p
+                point [x, y] or list of points [[x1,y1], [x2,y2], ...]
+        '''
+        def rotation_inv_one(point):
+            det = self.params[0] * self.params[3] - \
+                self.params[2] * self.params[1]
+            return [(self.params[3] * point[0] - self.params[1] * point[1]) / det,
+                    (self.params[2] * point[0] - self.params[0] * point[1]) / det * -1.0]
+
+        if not isinstance(points[0], list):
+            # Single point
+            return rotation_inv_one(points)
+        # else
+        return list(map(rotation_inv_one, points))
 
     def get_matrix(self):
         return [[self.params[0], self.params[1], self.params[4]],
