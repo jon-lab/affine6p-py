@@ -2,7 +2,7 @@
 affine6p
 ==========
 
-The Python lib to estimate affine transformation parameters between two sets of 2D points.::
+The Python affine6p lib is to estimate affine transformation parameters between two sets of 2D points.::
 
     | x' |   | a  b  p | | x |
     | y' | = | c  d  q | | y |
@@ -10,8 +10,8 @@ The Python lib to estimate affine transformation parameters between two sets of 
 
 .. image:: https://gitlab.com/yoshimoto/affine6p-py/raw/master/affine6p.png
    :alt: Example transformation
-   :height: 353px
-   :width: 300px
+   :height: 398px
+   :width: 342px
 
 When the sets are more than three points, the lib estimate parameters with the least squares method.
 

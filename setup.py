@@ -7,8 +7,8 @@ with open("README.rst") as f:
 
 setup(
     name="affine6p",
-    version="0.7",
-    description="To calculate affine transformation parameters with six free parameters.",
+    version="1.0.0",
+    description="The Python affine6p lib to estimate affine transformation parameters between two sets of 2D points",
     long_description=long_description,
     url="https://gitlab.com/yoshimoto/affine6p-py",
     author="Masahiro Yoshimoto",
@@ -17,7 +17,7 @@ setup(
     keywords="calculate affine transformation six parameters",
     packages=["affine6p"],
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: MIT License',
